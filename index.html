@@ -13,13 +13,10 @@
 <body>
     <h1>Autobullshiter - 胡说自动机</h1>
     <blockquote>
-        你好，这里是由<a href="https://f-y.me" target="_blank">Ted Fu</a>开发的，基于机器学习的Autobullshiter - 胡说自动机。你可以在下面键入两个词语作为一段话的开头，以及这段话的词数，机器人就会根据你键入的信息自动接出后面的话。下面也默认给出了一种填法，你可以试一试。
+        你好，这里是由<a href="https://f-y.me" target="_blank">Ted Fu</a>开发的，基于机器学习的Autobullshiter - 胡说自动机。你可以在下面键入一段文字作为开头，并键入你希望机器人生成的文本的词数（也就是不包括你已经给出的文本的词数），机器人就会根据你键入的信息自动接出后面的话。下面也默认给出了一种填法，你可以试一试。
     </blockquote>
     <div id="app">
-        <el-input type="text" placeholder="第一个词" v-model="prefix_1" maxlength="32" show-word-limit>
-        </el-input>
-        <div style="margin: 20px 0;"></div>
-        <el-input type="text" placeholder="第二个词" v-model="prefix_2" maxlength="32" show-word-limit>
+        <el-input type="textarea" :rows="4" placeholder="开头的一段话" v-model="prestr" maxlength="200" show-word-limit>
         </el-input>
         <div style="margin: 20px 0;"></div>
         <el-input type="number" placeholder="长度" v-model="length">
@@ -28,7 +25,7 @@
         <el-button type="primary" v-on:click="generate" round>生成</el-button>
         <h2>生成的胡话</h2>
         <blockquote>注意：下面的文字均由程序自动生成，不代表任何事实或观点，任何人也不对下面的文字负责，请勿相信下面的文字。</blockquote>
-        <p>{{ message }}</p>
+        <p>{{ result }}</p>
     </div>
 </body>
 <!-- import Vue before Element -->
@@ -41,16 +38,14 @@
     new Vue({
         el: '#app',
         data: {
-            prefix_1: '哲学',
-            prefix_2: '是',
-            length: 100,
-            message: ''
+            prestr: '数学是利用符号语言研究数量、结构、变化以及空间等概念的一门学科',
+            length: 200,
+            result: ''
         },
         methods: {
             generate: function() {
                 let data = {
-                    "prefix1": this.prefix_1,
-                    "prefix2": this.prefix_2,
+                    "prestr": this.prestr,
                     "length": Number(this.length)
                 }
 
@@ -64,8 +59,8 @@
                 });
 
                 axios
-                    .post('http://193.112.136.47:1323/api/generate', data)
-                    .then(response => (this.message = response.data))
+                    .post('http://localhost:1323/api/generate', data)
+                    .then(response => (this.result = response.data))
             }
         }
     })
